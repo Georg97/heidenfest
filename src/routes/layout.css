@@ -4,62 +4,122 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Warm dark theme — amber/copper/terracotta on deep charcoal */
+/* ============================================================
+   HEIDENFEST — woodland festival theme
+   Inspired by the festival logo: burnt orange bonfire, forest
+   green oak leaves, wood-brown branches, parchment cream.
+   ============================================================ */
+
 :root {
-  --radius: 0.625rem;
-  --font-display: "Fraunces", Georgia, serif;
-  --font-body: "Outfit", system-ui, sans-serif;
+  --radius: 0.75rem;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Fraunces", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-  /* Dark warm base — soft, washed-out tones */
-  --background: oklch(0.16 0.01 55);
-  --foreground: oklch(0.92 0.02 75);
-  --card: oklch(0.20 0.012 50);
-  --card-foreground: oklch(0.92 0.02 75);
-  --popover: oklch(0.20 0.012 50);
-  --popover-foreground: oklch(0.92 0.02 75);
+  /* ---------- LIGHT THEME — festival day, parchment ---------- */
+  --background: oklch(0.95 0.025 82);
+  --foreground: oklch(0.22 0.025 50);
+  --card: oklch(0.92 0.035 78);
+  --card-foreground: oklch(0.22 0.025 50);
+  --popover: oklch(0.94 0.03 80);
+  --popover-foreground: oklch(0.22 0.025 50);
 
-  /* Dusty amber primary */
-  --primary: oklch(0.80 0.08 65);
-  --primary-foreground: oklch(0.16 0.01 55);
+  /* Burnt orange primary — the bonfire */
+  --primary: oklch(0.58 0.18 38);
+  --primary-foreground: oklch(0.97 0.02 80);
 
-  /* Warm muted brown */
-  --secondary: oklch(0.24 0.015 45);
-  --secondary-foreground: oklch(0.88 0.03 70);
+  --secondary: oklch(0.88 0.04 75);
+  --secondary-foreground: oklch(0.30 0.04 50);
 
-  --muted: oklch(0.24 0.015 45);
-  --muted-foreground: oklch(0.60 0.025 60);
+  --muted: oklch(0.88 0.03 75);
+  --muted-foreground: oklch(0.45 0.04 55);
 
-  --accent: oklch(0.27 0.02 40);
-  --accent-foreground: oklch(0.92 0.02 75);
+  --accent: oklch(0.85 0.05 70);
+  --accent-foreground: oklch(0.22 0.025 50);
 
-  /* Muted terracotta destructive */
-  --destructive: oklch(0.65 0.10 30);
+  --destructive: oklch(0.55 0.18 28);
+
+  --border: oklch(0.30 0.04 50 / 14%);
+  --input: oklch(0.30 0.04 50 / 18%);
+  --ring: oklch(0.58 0.18 38);
+
+  --chart-1: oklch(0.58 0.18 38);
+  --chart-2: oklch(0.45 0.10 145);
+  --chart-3: oklch(0.65 0.14 55);
+  --chart-4: oklch(0.40 0.06 50);
+  --chart-5: oklch(0.78 0.08 75);
+
+  --sidebar: oklch(0.93 0.03 78);
+  --sidebar-foreground: oklch(0.22 0.025 50);
+  --sidebar-primary: oklch(0.58 0.18 38);
+  --sidebar-primary-foreground: oklch(0.97 0.02 80);
+  --sidebar-accent: oklch(0.88 0.04 75);
+  --sidebar-accent-foreground: oklch(0.22 0.025 50);
+  --sidebar-border: oklch(0.30 0.04 50 / 14%);
+  --sidebar-ring: oklch(0.58 0.18 38);
+
+  /* Festival accent palette */
+  --ember: oklch(0.66 0.20 42);          /* bonfire orange */
+  --ember-bright: oklch(0.78 0.18 55);   /* spark / amber */
+  --forest: oklch(0.42 0.09 148);        /* oak-leaf green */
+  --moss: oklch(0.55 0.07 138);          /* lighter moss green */
+  --wood: oklch(0.38 0.06 52);           /* raw wood brown */
+  --bark: oklch(0.28 0.05 45);           /* dark bark */
+  --parchment: oklch(0.95 0.025 82);     /* aged paper */
+  --rune: oklch(0.55 0.04 60);           /* etched rune */
+}
+
+.dark {
+  /* ---------- DARK THEME — festival night, firelight ---------- */
+  --background: oklch(0.14 0.012 55);
+  --foreground: oklch(0.94 0.035 82);
+  --card: oklch(0.18 0.014 50);
+  --card-foreground: oklch(0.94 0.035 82);
+  --popover: oklch(0.18 0.014 50);
+  --popover-foreground: oklch(0.94 0.035 82);
+
+  /* Brighter ember in the dark */
+  --primary: oklch(0.72 0.18 48);
+  --primary-foreground: oklch(0.14 0.012 55);
+
+  --secondary: oklch(0.22 0.018 45);
+  --secondary-foreground: oklch(0.90 0.04 78);
+
+  --muted: oklch(0.22 0.018 45);
+  --muted-foreground: oklch(0.65 0.04 70);
+
+  --accent: oklch(0.26 0.025 50);
+  --accent-foreground: oklch(0.94 0.035 82);
+
+  --destructive: oklch(0.62 0.16 28);
 
   --border: oklch(1 0 0 / 8%);
   --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.80 0.08 65);
+  --ring: oklch(0.72 0.18 48);
 
-  /* Soft chart palette */
-  --chart-1: oklch(0.80 0.08 65);
-  --chart-2: oklch(0.65 0.10 30);
-  --chart-3: oklch(0.72 0.06 85);
-  --chart-4: oklch(0.58 0.08 25);
-  --chart-5: oklch(0.85 0.05 80);
+  --chart-1: oklch(0.72 0.18 48);
+  --chart-2: oklch(0.55 0.10 145);
+  --chart-3: oklch(0.78 0.14 65);
+  --chart-4: oklch(0.45 0.07 50);
+  --chart-5: oklch(0.85 0.07 80);
 
-  --sidebar: oklch(0.18 0.012 50);
-  --sidebar-foreground: oklch(0.92 0.02 75);
-  --sidebar-primary: oklch(0.80 0.08 65);
-  --sidebar-primary-foreground: oklch(0.16 0.01 55);
-  --sidebar-accent: oklch(0.24 0.015 45);
-  --sidebar-accent-foreground: oklch(0.92 0.02 75);
+  --sidebar: oklch(0.16 0.014 52);
+  --sidebar-foreground: oklch(0.94 0.035 82);
+  --sidebar-primary: oklch(0.72 0.18 48);
+  --sidebar-primary-foreground: oklch(0.14 0.012 55);
+  --sidebar-accent: oklch(0.22 0.018 45);
+  --sidebar-accent-foreground: oklch(0.94 0.035 82);
   --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: oklch(0.80 0.08 65);
+  --sidebar-ring: oklch(0.72 0.18 48);
 
-  /* Custom warm accents — washed out */
-  --copper: oklch(0.68 0.09 45);
-  --terracotta: oklch(0.62 0.09 32);
-  --amber: oklch(0.84 0.07 75);
-  --cream: oklch(0.94 0.02 80);
+  --ember: oklch(0.72 0.20 45);
+  --ember-bright: oklch(0.85 0.17 70);
+  --forest: oklch(0.55 0.10 148);
+  --moss: oklch(0.65 0.08 140);
+  --wood: oklch(0.48 0.07 52);
+  --bark: oklch(0.32 0.05 45);
+  --parchment: oklch(0.94 0.035 82);
+  --rune: oklch(0.72 0.05 65);
 }
 
 @theme inline {
@@ -67,6 +127,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -99,13 +160,18 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --color-copper: var(--copper);
-  --color-terracotta: var(--terracotta);
-  --color-amber: var(--amber);
-  --color-cream: var(--cream);
+  --color-ember: var(--ember);
+  --color-ember-bright: var(--ember-bright);
+  --color-forest: var(--forest);
+  --color-moss: var(--moss);
+  --color-wood: var(--wood);
+  --color-bark: var(--bark);
+  --color-parchment: var(--parchment);
+  --color-rune: var(--rune);
 
   --font-display: var(--font-display);
   --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
 }
 
 @layer base {
@@ -118,11 +184,15 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
+    font-feature-settings: "ss01", "ss02";
   }
 }
 
-/* Grain overlay texture */
+/* ============================================================
+   Texture & atmosphere
+   ============================================================ */
 @layer utilities {
+  /* Film grain for parchment / firelight */
   .grain {
     position: relative;
   }
@@ -131,53 +201,168 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    opacity: 0.035;
+    opacity: 0.05;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
     background-repeat: repeat;
     background-size: 256px 256px;
     mix-blend-mode: overlay;
     z-index: 1;
   }
+
+  /* Wood grain texture, very subtle */
+  .wood-grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 2px,
+      var(--wood) 2px,
+      var(--wood) 3px,
+      transparent 3px,
+      transparent 7px
+    );
+    mix-blend-mode: overlay;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
 }
 
-/* Keyframe animations */
-@keyframes float-slow {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  33% { transform: translateY(-20px) rotate(2deg); }
-  66% { transform: translateY(10px) rotate(-1deg); }
-}
-
-@keyframes float-slower {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-30px) scale(1.05); }
-}
+/* ============================================================
+   Keyframes — fire, embers, reveals
+   ============================================================ */
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(24px); }
+  from { opacity: 0; transform: translateY(28px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes pulse-warm {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@keyframes slide-in-left {
-  from { opacity: 0; transform: translateX(-40px); }
-  to { opacity: 1; transform: translateX(0); }
+@keyframes logo-reveal {
+  0% { opacity: 0; transform: scale(0.7) rotate(-8deg); filter: blur(12px); }
+  60% { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: scale(1) rotate(0); filter: blur(0); }
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+@keyframes title-letter {
+  0% { opacity: 0; transform: translateY(40px) rotateX(-90deg); }
+  100% { opacity: 1; transform: translateY(0) rotateX(0); }
 }
 
-.animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
-.animate-float-slower { animation: float-slower 12s ease-in-out infinite; }
-.animate-fade-up { animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-slide-in-left { animation: slide-in-left 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-pulse-warm { animation: pulse-warm 3s ease-in-out infinite; }
-.animate-shimmer {
-  background-size: 200% auto;
-  animation: shimmer 3s linear infinite;
+@keyframes ember-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) translateX(0) scale(0.6);
+  }
+  10% { opacity: 1; }
+  85% { opacity: 0.7; }
+  100% {
+    opacity: 0;
+    transform: translateY(-100vh) translateX(var(--drift, 30px)) scale(1);
+  }
+}
+
+@keyframes fire-pulse {
+  0%, 100% {
+    opacity: 0.55;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+@keyframes fire-flicker {
+  0%, 100% { opacity: 0.5; }
+  10% { opacity: 0.65; }
+  20% { opacity: 0.45; }
+  30% { opacity: 0.75; }
+  45% { opacity: 0.55; }
+  60% { opacity: 0.8; }
+  75% { opacity: 0.6; }
+  90% { opacity: 0.7; }
+}
+
+@keyframes orbit-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes digit-flip {
+  0% { opacity: 0; transform: translateY(-100%); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes button-glow {
+  0%, 100% { box-shadow: 0 0 0 0 var(--ember), 0 0 24px -4px var(--ember); }
+  50% { box-shadow: 0 0 0 0 var(--ember), 0 0 38px -2px var(--ember); }
+}
+
+@keyframes underline-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.animate-fade-up { animation: fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-fade-in { animation: fade-in 1.2s ease-out both; }
+.animate-logo-reveal { animation: logo-reveal 1.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-title-letter { animation: title-letter 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.animate-fire-pulse { animation: fire-pulse 4.5s ease-in-out infinite; }
+.animate-fire-flicker { animation: fire-flicker 3.2s ease-in-out infinite; }
+.animate-orbit-slow { animation: orbit-slow 60s linear infinite; }
+.animate-digit-flip { animation: digit-flip 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.animate-button-glow { animation: button-glow 3s ease-in-out infinite; }
+.animate-underline-grow { animation: underline-grow 1.2s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: left; }
+
+/* ============================================================
+   Component-level: countdown digits, ember container
+   ============================================================ */
+
+.ember-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ember {
+  position: absolute;
+  bottom: -10px;
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, var(--ember-bright) 0%, var(--ember) 50%, transparent 80%);
+  box-shadow: 0 0 8px var(--ember);
+  animation: ember-rise var(--dur, 8s) linear infinite;
+  animation-delay: var(--delay, 0s);
+  opacity: 0;
+}
+
+.countdown-num {
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.runic-divider {
+  background-image: linear-gradient(90deg, transparent, var(--ember) 20%, var(--ember) 80%, transparent);
+  height: 1px;
+}
+
+/* "Heidenfest" letters — each gets a stagger delay */
+.title-letter {
+  display: inline-block;
+  transform-origin: bottom center;
 }
