@@ -30,11 +30,11 @@
 
 	const pad = (n: number, w = 2) => String(n).padStart(w, '0');
 
-	// Localized opening time for the user
+	// Localized opening time for the user (German locale, user's local timezone)
 	const localOpening = $derived.by(() => {
 		if (!mounted) return '';
 		try {
-			return new Intl.DateTimeFormat(undefined, {
+			return new Intl.DateTimeFormat('de-DE', {
 				weekday: 'long',
 				day: 'numeric',
 				month: 'long',
@@ -44,7 +44,7 @@
 				timeZoneName: 'short'
 			}).format(new Date(TARGET));
 		} catch {
-			return new Date(TARGET).toLocaleString();
+			return new Date(TARGET).toLocaleString('de-DE');
 		}
 	});
 
