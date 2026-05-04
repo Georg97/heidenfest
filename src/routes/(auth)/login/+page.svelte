@@ -2,10 +2,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { authClient } from '$lib/auth-client';
 	import { toast } from 'svelte-sonner';
-	import { mode, toggleMode } from 'mode-watcher';
 	import Loader from '@lucide/svelte/icons/loader';
-	import Sun from '@lucide/svelte/icons/sun';
-	import Moon from '@lucide/svelte/icons/moon';
 	import Flame from '@lucide/svelte/icons/flame';
 
 	// 12 June 2026, 12:00 CEST (UTC+2) — fixed instant in time
@@ -115,30 +112,19 @@
 	</div>
 
 	<!-- ===== Top bar ===== -->
-	<header class="relative z-20 flex items-center justify-between px-6 py-5 sm:px-10 sm:py-6">
+	<header class="relative z-20 flex items-center justify-center px-4 py-4 sm:px-10 sm:py-6">
 		<div
-			class="animate-fade-in text-muted-foreground flex items-center gap-2 text-[11px] tracking-[0.32em] uppercase"
+			class="animate-fade-in text-muted-foreground flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase sm:text-[11px] sm:tracking-[0.32em]"
 			style="font-family: var(--font-display); animation-delay: 0.6s;"
 		>
 			<span class="bg-ember inline-block size-1.5 rounded-full"></span>
 			Anno · MMXXVI
+			<span class="bg-ember inline-block size-1.5 rounded-full"></span>
 		</div>
-
-		<button
-			onclick={toggleMode}
-			class="group bg-card/40 hover:border-ember/40 hover:bg-card/70 relative inline-flex size-10 items-center justify-center rounded-full border border-white/[0.08] backdrop-blur-md transition-all"
-			aria-label="Toggle theme"
-		>
-			{#if mode.current === 'dark'}
-				<Sun class="text-ember size-4 transition-transform group-hover:rotate-45" />
-			{:else}
-				<Moon class="text-ember size-4 transition-transform group-hover:-rotate-12" />
-			{/if}
-		</button>
 	</header>
 
 	<!-- ===== Main ===== -->
-	<main class="relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-16 text-center sm:px-10">
+	<main class="relative z-10 flex flex-1 flex-col items-center justify-center px-4 pb-8 text-center sm:px-10 sm:pb-16">
 		<!-- Logo -->
 		<div class="animate-logo-reveal relative" style="animation-delay: 0.05s;">
 			<!-- Soft glow under the logo -->
@@ -154,11 +140,11 @@
 			></div>
 
 			<div
-				class="bg-card/30 ring-ember/15 relative size-[220px] overflow-hidden rounded-full p-2 ring-1 backdrop-blur-sm sm:size-[260px]"
+				class="bg-card/30 ring-ember/15 relative size-37.5 overflow-hidden rounded-full p-2 ring-1 backdrop-blur-sm sm:size-60"
 				style="box-shadow: inset 0 0 60px color-mix(in oklch, var(--ember) 25%, transparent), 0 12px 60px -12px color-mix(in oklch, var(--ember) 40%, transparent);"
 			>
 				<img
-					src={mode.current === 'light' ? '/festival-art.webp' : '/festival-art-dark.webp'}
+					src="/festival-art-dark.webp"
 					alt="Heidenfest"
 					class="size-full rounded-full object-cover"
 				/>
@@ -167,7 +153,7 @@
 
 		<!-- Tiny eyebrow -->
 		<p
-			class="animate-fade-up text-ember mt-10 text-[10px] tracking-[0.5em] uppercase"
+			class="animate-fade-up text-ember mt-6 text-[9px] tracking-[0.4em] uppercase sm:mt-10 sm:text-[10px] sm:tracking-[0.5em]"
 			style="font-family: var(--font-display); animation-delay: 0.7s;"
 		>
 			· Met · Feuer · Freunde ·
@@ -175,8 +161,8 @@
 
 		<!-- Title — letter by letter -->
 		<h1
-			class="mt-3 text-[14vw] leading-[0.9] font-black tracking-[-0.02em] sm:text-7xl md:text-8xl lg:text-[112px]"
-			style="font-family: var(--font-display);"
+			class="mt-2 leading-[0.9] font-black whitespace-nowrap sm:mt-3"
+			style="font-family: var(--font-display); font-size: clamp(2.2rem, 11vw, 7rem); letter-spacing: -0.045em;"
 			aria-label="Heidenfest"
 		>
 			{#each HEIDENFEST as letter, i}
@@ -189,33 +175,33 @@
 
 		<!-- Underline -->
 		<div
-			class="runic-divider animate-underline-grow mt-5 w-48 max-w-full"
+			class="runic-divider animate-underline-grow mt-4 w-32 max-w-full sm:mt-5 sm:w-48"
 			style="animation-delay: 1.7s;"
 		></div>
 
 		<!-- Primer -->
 		<p
-			class="animate-fade-up text-foreground/85 mt-6 max-w-md text-balance text-base leading-relaxed sm:text-lg"
+			class="animate-fade-up text-foreground/85 mt-4 max-w-[20rem] text-balance text-sm leading-relaxed sm:mt-6 sm:max-w-md sm:text-lg"
 			style="font-family: var(--font-body); font-style: italic; animation-delay: 1.85s;"
 		>
 			Eine Nacht im Wald. Trinkhörner gehoben, das Feuer hoch, die Geschichten lauter.
-			Versammelt euch — die Heide ruft.
+			Versammelt euch — die Götter rufen. Sie verlangen Opfer!
 		</p>
 
 		<!-- Countdown -->
-		<div class="animate-fade-up mt-10 sm:mt-12" style="animation-delay: 2s;">
+		<div class="animate-fade-up mt-6 w-full max-w-md sm:mt-12" style="animation-delay: 2s;">
 			<p
-				class="text-muted-foreground mb-4 text-[10px] tracking-[0.4em] uppercase"
+				class="text-muted-foreground mb-3 text-[9px] tracking-[0.32em] uppercase sm:mb-4 sm:text-[10px] sm:tracking-[0.4em]"
 				style="font-family: var(--font-display);"
 			>
-				Bis das Feuer brennt
+				Möge das Feuer ewig brennen
 			</p>
 
-			<div class="flex items-end justify-center gap-3 sm:gap-5">
+			<div class="flex items-end justify-center gap-2 sm:gap-5">
 				{#each [{ v: pad(days, 2), l: 'Tage' }, { v: pad(hours), l: 'Std' }, { v: pad(mins), l: 'Min' }, { v: pad(secs), l: 'Sek' }] as block, i (block.l)}
-					<div class="flex flex-col items-center">
+					<div class="flex flex-1 flex-col items-center sm:flex-initial">
 						<div
-							class="bg-card/40 ring-ember/10 hover:ring-ember/40 relative flex h-20 min-w-[68px] items-center justify-center rounded-2xl px-3 ring-1 backdrop-blur-md transition-all sm:h-28 sm:min-w-[96px] sm:px-5"
+							class="bg-card/40 ring-ember/10 hover:ring-ember/40 relative flex h-16 w-full min-w-0 items-center justify-center rounded-xl px-1 ring-1 backdrop-blur-md transition-all sm:h-28 sm:w-auto sm:min-w-24 sm:rounded-2xl sm:px-5"
 							style="box-shadow: inset 0 1px 0 color-mix(in oklch, var(--foreground) 6%, transparent), 0 8px 30px -10px color-mix(in oklch, var(--ember) 30%, transparent);"
 						>
 							<!-- inner ember glow -->
@@ -224,14 +210,14 @@
 								style="background: var(--ember);"
 							></div>
 							<span
-								class="countdown-num text-foreground text-4xl font-light sm:text-6xl"
+								class="countdown-num text-foreground text-3xl font-light sm:text-6xl"
 								style="font-family: var(--font-body); font-feature-settings: 'tnum';"
 							>
 								{block.v}
 							</span>
 						</div>
 						<span
-							class="text-muted-foreground mt-2 text-[10px] tracking-[0.3em] uppercase"
+							class="text-muted-foreground mt-1.5 text-[9px] tracking-[0.22em] uppercase sm:mt-2 sm:text-[10px] sm:tracking-[0.3em]"
 							style="font-family: var(--font-display);"
 						>
 							{block.l}
@@ -252,7 +238,7 @@
 			<!-- Localized opening time -->
 			{#if mounted}
 				<p
-					class="text-muted-foreground/80 mt-5 text-xs"
+					class="text-muted-foreground/80 mt-4 text-[11px] sm:mt-5 sm:text-xs"
 					style="font-family: var(--font-body);"
 				>
 					{localOpening}
@@ -264,7 +250,7 @@
 		<button
 			onclick={handleGoogle}
 			disabled={googleLoading}
-			class="group bg-ember text-primary-foreground hover:bg-ember/90 relative mt-10 inline-flex h-13 items-center gap-3 overflow-hidden rounded-full px-8 text-sm font-medium tracking-[0.18em] uppercase shadow-lg transition-all hover:scale-[1.02] disabled:opacity-60 sm:mt-12"
+			class="group bg-ember text-primary-foreground hover:bg-ember/90 relative mt-7 inline-flex h-12 items-center gap-2.5 overflow-hidden rounded-full px-7 text-xs font-medium tracking-[0.18em] uppercase shadow-lg transition-all hover:scale-[1.02] disabled:opacity-60 sm:mt-12 sm:h-13 sm:gap-3 sm:px-8 sm:text-sm"
 			style="font-family: var(--font-display); animation: fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) 2.2s both, button-glow 3s ease-in-out 3s infinite;"
 		>
 			<!-- shimmer sweep -->
@@ -290,7 +276,7 @@
 		</button>
 
 		<p
-			class="animate-fade-up text-muted-foreground/60 mt-5 text-xs"
+			class="animate-fade-up text-muted-foreground/60 mt-4 text-[11px] sm:mt-5 sm:text-xs"
 			style="animation-delay: 2.4s;"
 		>
 			Mit Google fortfahren
@@ -299,13 +285,13 @@
 
 	<!-- ===== Footer ===== -->
 	<footer
-		class="relative z-10 flex items-center justify-between px-6 py-5 sm:px-10"
+		class="relative z-10 flex items-center justify-between px-4 py-4 sm:px-10 sm:py-5"
 		style="font-family: var(--font-display);"
 	>
-		<span class="text-muted-foreground/60 text-[10px] tracking-[0.3em] uppercase"
+		<span class="text-muted-foreground/60 text-[9px] tracking-[0.26em] uppercase sm:text-[10px] sm:tracking-[0.3em]"
 			>Heidenfest · MMXXVI</span
 		>
-		<span class="text-muted-foreground/60 text-[10px] tracking-[0.3em] uppercase"
+		<span class="text-muted-foreground/60 text-[9px] tracking-[0.26em] uppercase sm:text-[10px] sm:tracking-[0.3em]"
 			>Im tiefen Wald</span
 		>
 	</footer>

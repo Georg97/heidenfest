@@ -2,12 +2,11 @@
 
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
 /* ============================================================
-   HEIDENFEST — woodland festival theme
+   HEIDENFEST — woodland festival theme (dark only)
    Inspired by the festival logo: burnt orange bonfire, forest
-   green oak leaves, wood-brown branches, parchment cream.
+   green oak leaves, wood-brown branches, parchment cream on
+   deep firelit night.
    ============================================================ */
 
 :root {
@@ -16,61 +15,7 @@
   --font-body: "Fraunces", Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-  /* ---------- LIGHT THEME — festival day, parchment ---------- */
-  --background: oklch(0.95 0.025 82);
-  --foreground: oklch(0.22 0.025 50);
-  --card: oklch(0.92 0.035 78);
-  --card-foreground: oklch(0.22 0.025 50);
-  --popover: oklch(0.94 0.03 80);
-  --popover-foreground: oklch(0.22 0.025 50);
-
-  /* Burnt orange primary — the bonfire */
-  --primary: oklch(0.58 0.18 38);
-  --primary-foreground: oklch(0.97 0.02 80);
-
-  --secondary: oklch(0.88 0.04 75);
-  --secondary-foreground: oklch(0.30 0.04 50);
-
-  --muted: oklch(0.88 0.03 75);
-  --muted-foreground: oklch(0.45 0.04 55);
-
-  --accent: oklch(0.85 0.05 70);
-  --accent-foreground: oklch(0.22 0.025 50);
-
-  --destructive: oklch(0.55 0.18 28);
-
-  --border: oklch(0.30 0.04 50 / 14%);
-  --input: oklch(0.30 0.04 50 / 18%);
-  --ring: oklch(0.58 0.18 38);
-
-  --chart-1: oklch(0.58 0.18 38);
-  --chart-2: oklch(0.45 0.10 145);
-  --chart-3: oklch(0.65 0.14 55);
-  --chart-4: oklch(0.40 0.06 50);
-  --chart-5: oklch(0.78 0.08 75);
-
-  --sidebar: oklch(0.93 0.03 78);
-  --sidebar-foreground: oklch(0.22 0.025 50);
-  --sidebar-primary: oklch(0.58 0.18 38);
-  --sidebar-primary-foreground: oklch(0.97 0.02 80);
-  --sidebar-accent: oklch(0.88 0.04 75);
-  --sidebar-accent-foreground: oklch(0.22 0.025 50);
-  --sidebar-border: oklch(0.30 0.04 50 / 14%);
-  --sidebar-ring: oklch(0.58 0.18 38);
-
-  /* Festival accent palette */
-  --ember: oklch(0.66 0.20 42);          /* bonfire orange */
-  --ember-bright: oklch(0.78 0.18 55);   /* spark / amber */
-  --forest: oklch(0.42 0.09 148);        /* oak-leaf green */
-  --moss: oklch(0.55 0.07 138);          /* lighter moss green */
-  --wood: oklch(0.38 0.06 52);           /* raw wood brown */
-  --bark: oklch(0.28 0.05 45);           /* dark bark */
-  --parchment: oklch(0.95 0.025 82);     /* aged paper */
-  --rune: oklch(0.55 0.04 60);           /* etched rune */
-}
-
-.dark {
-  /* ---------- DARK THEME — festival night, firelight ---------- */
+  /* Festival night, firelight */
   --background: oklch(0.14 0.012 55);
   --foreground: oklch(0.94 0.035 82);
   --card: oklch(0.18 0.014 50);
@@ -78,7 +23,7 @@
   --popover: oklch(0.18 0.014 50);
   --popover-foreground: oklch(0.94 0.035 82);
 
-  /* Brighter ember in the dark */
+  /* Bright ember in the dark */
   --primary: oklch(0.72 0.18 48);
   --primary-foreground: oklch(0.14 0.012 55);
 
@@ -112,14 +57,15 @@
   --sidebar-border: oklch(1 0 0 / 8%);
   --sidebar-ring: oklch(0.72 0.18 48);
 
-  --ember: oklch(0.72 0.20 45);
-  --ember-bright: oklch(0.85 0.17 70);
-  --forest: oklch(0.55 0.10 148);
-  --moss: oklch(0.65 0.08 140);
-  --wood: oklch(0.48 0.07 52);
-  --bark: oklch(0.32 0.05 45);
-  --parchment: oklch(0.94 0.035 82);
-  --rune: oklch(0.72 0.05 65);
+  /* Festival accent palette */
+  --ember: oklch(0.72 0.20 45);          /* bonfire orange */
+  --ember-bright: oklch(0.85 0.17 70);   /* spark / amber */
+  --forest: oklch(0.55 0.10 148);        /* oak-leaf green */
+  --moss: oklch(0.65 0.08 140);          /* lighter moss green */
+  --wood: oklch(0.48 0.07 52);           /* raw wood brown */
+  --bark: oklch(0.32 0.05 45);           /* dark bark */
+  --parchment: oklch(0.94 0.035 82);     /* aged paper */
+  --rune: oklch(0.72 0.05 65);           /* etched rune */
 }
 
 @theme inline {
