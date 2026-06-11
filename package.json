@@ -25,7 +25,6 @@
 		"@tailwindcss/vite": "^4.1.18",
 		"bits-ui": "^2.15.4",
 		"clsx": "^2.1.1",
-		"drizzle-kit": "^0.31.9",
 		"eslint": "^10.0.1",
 		"eslint-plugin-svelte": "^3.15.0",
 		"globals": "^17.3.0",
@@ -53,10 +52,11 @@
 		"zod": "^4.3.6"
 	},
 	"dependencies": {
-		"@libsql/client": "^0.17.0",
-		"better-auth": "^1.4.18",
-		"dotenv": "^17.3.1",
-		"drizzle-orm": "^0.45.1"
+		"@convex-dev/better-auth": "^0.12.3",
+		"@mmailaender/convex-better-auth-svelte": "^0.8.0",
+		"better-auth": "^1.6.16",
+		"convex": "^1.41.0",
+		"convex-svelte": "^0.13.0"
 	},
 	"description": "Heidenfest Planungs Seite"
 }

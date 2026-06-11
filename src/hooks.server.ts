@@ -1,18 +1,10 @@
-import { auth } from "$lib/auth"; // path to your auth file
-import { svelteKitHandler } from "better-auth/svelte-kit";
-import { building } from '$app/environment'
+import type { Handle } from '@sveltejs/kit';
+import { getToken } from '@mmailaender/convex-better-auth-svelte/sveltekit';
+import { withServerConvexToken } from 'convex-svelte/sveltekit/server';
 
-export async function handle({ event, resolve }) {
-    // Fetch current session from Better Auth
-    const session = await auth.api.getSession({
-        headers: event.request.headers,
-    });
-    // Make session and user available on server
-    if (session) {
-        // @ts-ignore
-        event.locals.session = session.session;
-        // @ts-ignore
-        event.locals.user = session.user;
-    }
-    return svelteKitHandler({ event, resolve, auth, building });
-}
+export const handle: Handle = async ({ event, resolve }) => {
+	const token = getToken(event.cookies);
+	event.locals.token = token;
+	// Makes the token available to createConvexHttpClient() in load functions.
+	return withServerConvexToken(token, () => resolve(event));
+};
