@@ -1,17 +1,26 @@
 // Seed the real Heidenfest 2026 event from the original landing page content.
-const BASE = 'http://localhost:5173';
+//
+// Local (dev server + smoke user):  node scripts/seed-heidenfest.mjs
+// Production (your own account):    SKOL_URL=https://… SKOL_API_TOKEN=skol_… node scripts/seed-heidenfest.mjs
+const BASE = process.env.SKOL_URL?.replace(/\/$/, '') ?? 'http://localhost:5173';
 
-const signin = await fetch(`${BASE}/api/auth/sign-in/email`, {
-	method: 'POST',
-	headers: { 'content-type': 'application/json', origin: BASE },
-	body: JSON.stringify({ email: 'smoke-test@example.com', password: 'test-password-1234' })
-});
-const cookie = signin.headers.getSetCookie().map((c) => c.split(';')[0]).join('; ');
+let authHeaders;
+if (process.env.SKOL_API_TOKEN) {
+	authHeaders = { authorization: `Bearer ${process.env.SKOL_API_TOKEN}` };
+} else {
+	const signin = await fetch(`${BASE}/api/auth/sign-in/email`, {
+		method: 'POST',
+		headers: { 'content-type': 'application/json', origin: BASE },
+		body: JSON.stringify({ email: 'smoke-test@example.com', password: 'test-password-1234' })
+	});
+	const cookie = signin.headers.getSetCookie().map((c) => c.split(';')[0]).join('; ');
+	authHeaders = { cookie, origin: BASE };
+}
 
 async function call(method, path, body) {
 	const res = await fetch(`${BASE}/api/v1/${path}`, {
 		method,
-		headers: { 'content-type': 'application/json', cookie, origin: BASE },
+		headers: { 'content-type': 'application/json', ...authHeaders },
 		body: body ? JSON.stringify(body) : undefined
 	});
 	const json = await res.json();
