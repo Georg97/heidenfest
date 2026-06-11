@@ -1,5 +1,5 @@
 {
-	"name": "heidenfest",
+	"name": "skol",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
@@ -31,6 +31,7 @@
 		"isomorphic-dompurify": "2.25.0",
 		"jsrepo": "^3.5.1",
 		"mode-watcher": "^1.1.0",
+		"playwright": "^1.60.0",
 		"prettier": "^3.8.1",
 		"prettier-plugin-svelte": "^3.5.0",
 		"prettier-plugin-tailwindcss": "^0.7.2",
@@ -54,9 +55,12 @@
 	"dependencies": {
 		"@convex-dev/better-auth": "^0.12.3",
 		"@mmailaender/convex-better-auth-svelte": "^0.8.0",
+		"aws4fetch": "^1.0.20",
 		"better-auth": "^1.6.16",
 		"convex": "^1.41.0",
-		"convex-svelte": "^0.13.0"
+		"convex-svelte": "^0.13.0",
+		"js-sha256": "^0.11.1",
+		"marked": "^18.0.5"
 	},
-	"description": "Heidenfest Planungs Seite"
+	"description": "skol — Feste planen wie am Lagerfeuer"
 }

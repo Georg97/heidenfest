@@ -8,8 +8,15 @@
  * @module
  */
 
+import type * as access from "../access.js";
+import type * as admin from "../admin.js";
+import type * as apiTokens from "../apiTokens.js";
 import type * as auth from "../auth.js";
+import type * as events from "../events.js";
 import type * as http from "../http.js";
+import type * as lists from "../lists.js";
+import type * as members from "../members.js";
+import type * as pages from "../pages.js";
 
 import type {
   ApiFromModules,
@@ -18,8 +25,15 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  access: typeof access;
+  admin: typeof admin;
+  apiTokens: typeof apiTokens;
   auth: typeof auth;
+  events: typeof events;
   http: typeof http;
+  lists: typeof lists;
+  members: typeof members;
+  pages: typeof pages;
 }>;
 
 /**

@@ -1,9 +1,11 @@
 import { createClient, type AuthFunctions, type GenericCtx } from '@convex-dev/better-auth';
 import { convex } from '@convex-dev/better-auth/plugins';
 import { betterAuth } from 'better-auth/minimal';
+import { v } from 'convex/values';
 import { components, internal } from './_generated/api';
 import type { DataModel } from './_generated/dataModel';
 import { query } from './_generated/server';
+import { currentUser } from './access';
 import authConfig from './auth.config';
 
 const authFunctions: AuthFunctions = internal.auth;
@@ -70,14 +72,10 @@ export const createAuth = (ctx: GenericCtx<DataModel>) =>
 	});
 
 // Current app user (mirror row incl. isAppAdmin), or null when signed out.
+// Accepts an apiToken so the REST API / MCP can resolve "me".
 export const getCurrentUser = query({
-	args: {},
-	handler: async (ctx) => {
-		const authUser = await authComponent.safeGetAuthUser(ctx);
-		if (!authUser) return null;
-		return await ctx.db
-			.query('users')
-			.withIndex('by_authId', (q) => q.eq('authId', authUser._id))
-			.unique();
+	args: { apiToken: v.optional(v.string()) },
+	handler: async (ctx, args) => {
+		return await currentUser(ctx, args.apiToken);
 	}
 });

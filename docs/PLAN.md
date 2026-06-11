@@ -103,32 +103,40 @@ First registered user becomes app admin (bootstrap).
 > Wipe it before real use so the first real signup becomes app admin.
 
 ### Phase 2 — skol rebrand
-- [ ] package.json name, titles, favicon, nav branding
-- [ ] Landing page generalized (skol identity, campfire theme retained)
-- [ ] App shell: mobile-first nav (frontend-design skill)
+- [x] package.json name, titles, favicon (drinking horn), nav branding
+- [x] Landing page generalized (skol identity, campfire theme retained)
+- [x] App shell: mobile-first nav (frontend-design skill)
 
 ### Phase 3 — Core features
-- [ ] Convex schema for domain tables + indexes
-- [ ] Authorization helpers (requireUser, requireEventMember, requireEventAdmin, requireAppAdmin)
-- [ ] Events: CRUD, duplicate (new timeframe prompt), member management, promote admin
-- [ ] Lists: CRUD, copy into event, entries CRUD, mark/unmark with comment
-- [ ] Pages: CRUD with markdown editor + sanitized rendering
-- [ ] R2 presigned upload + image display (profile picture, event image)
-- [ ] Profile page; admin settings page
-- [ ] Realtime: convex-svelte useQuery on event detail/lists
+- [x] Convex schema for domain tables + indexes
+- [x] Authorization helpers (requireUser, requireEventMember, requireEventAdmin, requireAppAdmin)
+- [x] Events: CRUD, duplicate (new timeframe prompt), member management, promote admin
+- [x] Lists: CRUD, copy into event, entries CRUD, mark/unmark with comment
+- [x] Pages: CRUD with markdown editor (write/preview) + sanitized rendering
+- [x] R2 upload via server route + image proxy (profile picture, event image)
+- [x] Profile page; admin settings page
+- [x] Realtime: convex-svelte useQuery on events, lists, pages, members
 
 ### Phase 4 — API + MCP
-- [ ] apiTokens table + token mint/revoke UI (hashed storage, shown once)
-- [ ] `/api/v1` REST routes with Bearer auth (events, lists, entries, marks, pages, members)
-- [ ] OpenAPI-ish route summary in docs/API.md
-- [ ] `mcp/` fastmcp server with tools for all features, SKOL_API_TOKEN env
-- [ ] MCP smoke test against running dev server
+- [x] apiTokens table + token mint/revoke UI (SHA-256 hashed, raw token shown once)
+- [x] `/api/v1` REST routes with Bearer auth — single catch-all router
+- [x] Route reference in docs/API.md
+- [x] `mcp/` fastmcp server (26 tools, full feature parity), SKOL_API_TOKEN env
+- [x] MCP smoke test (in-memory client) — all pass
 
 ### Phase 5 — Verification
-- [ ] svelte-check clean
-- [ ] vite build clean
-- [ ] Manual run-through of main flows (mobile viewport)
-- [ ] PLAN.md checklists updated, final commit
+- [x] svelte-check clean (0 errors)
+- [x] vite build clean
+- [x] REST API end-to-end suite: 30/30 pass (scripts/smoke-api.mjs)
+- [x] Mobile screenshots verified (scripts/screenshots.mjs, 390×844)
+- [x] Heidenfest 2026 seeded as first real event (scripts/seed-heidenfest.mjs)
+- [x] PLAN.md checklists updated, final commit
+
+### Backlog (deliberately not built — KISS)
+- Entry reordering (creation order is fine for now)
+- Convex `convexLoad` SSR upgrade for queries (client-side useQuery is fine)
+- Account deletion flow (dashboard operation)
+- Production deployment (adapter choice, `npx convex deploy`, prod env vars)
 
 ## 5. Environment variables
 
