@@ -2,7 +2,7 @@ import { ConvexError, v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 import { internal } from './_generated/api';
 import { requireEventAdmin, requireEventMember } from './access';
-import { inviteEmail } from './email';
+import { inviteEmail } from './emails';
 import { notify } from './notifications';
 
 const apiToken = v.optional(v.string());

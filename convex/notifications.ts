@@ -4,7 +4,7 @@ import type { MutationCtx } from './_generated/server';
 import type { Doc, Id } from './_generated/dataModel';
 import { internal } from './_generated/api';
 import { requireUser } from './access';
-import { notificationEmail } from './email';
+import { notificationEmail } from './emails';
 
 const apiToken = v.optional(v.string());
 

@@ -144,8 +144,9 @@ First registered user becomes app admin (bootstrap).
       (`notifyInApp` default on, `notifyEmail` default off)
 - [x] Notification triggers: invite, event updated, new list, new page —
       all event members except the actor
-- [x] Email sending from Convex: `email.ts` internalAction via scheduler
-      (Resend REST API; logs + skips when `RESEND_API_KEY` is unset)
+- [x] Email sending from Convex: `email.ts` internalAction (Node runtime,
+      nodemailer over plain SMTP — no mail API service) via scheduler;
+      logs + skips when `SMTP_*` env vars are unset; templates in `emails.ts`
 - [x] UI: bell + unread badge in header, `/notifications` page, settings
       toggles in profile, pending-invites section with revoke in EventMembers
 - [x] REST: `/notifications*`, `/me/settings`, `/events/:id/invites`,
@@ -171,8 +172,9 @@ First registered user becomes app admin (bootstrap).
 | `PUBLIC_CONVEX_SITE_URL` | `.env.local` | Convex HTTP actions URL (auth proxy target) |
 | `SITE_URL`, `BETTER_AUTH_SECRET`, `GOOGLE_CLIENT_ID/SECRET` | Convex deployment env | Better Auth runs inside Convex |
 | `R2_ENDPOINT`, `R2_BUCKET`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | `.env` | Presigned uploads (server only) |
-| `RESEND_API_KEY` | Convex deployment env | Email sending; unset → sends are logged + skipped |
-| `EMAIL_FROM` | Convex deployment env | Sender, e.g. `skol <fest@domain>`; defaults to Resend's onboarding sender |
+| `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` | Convex deployment env | Email via plain SMTP (any mailbox); unset → sends are logged + skipped |
+| `SMTP_PORT` | Convex deployment env | Optional, default 587 (STARTTLS); 465 uses implicit TLS |
+| `EMAIL_FROM` | Convex deployment env | Optional sender, e.g. `skol <fest@domain>`; defaults to `SMTP_USER` |
 
 ## 6. Open questions / needs from Georg
 

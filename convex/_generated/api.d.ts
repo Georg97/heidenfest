@@ -14,6 +14,7 @@ import type * as apiTokens from "../apiTokens.js";
 import type * as auth from "../auth.js";
 import type * as dev from "../dev.js";
 import type * as email from "../email.js";
+import type * as emails from "../emails.js";
 import type * as events from "../events.js";
 import type * as http from "../http.js";
 import type * as lists from "../lists.js";
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   dev: typeof dev;
   email: typeof email;
+  emails: typeof emails;
   events: typeof events;
   http: typeof http;
   lists: typeof lists;
