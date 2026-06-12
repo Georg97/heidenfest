@@ -4,6 +4,7 @@
 	import { toast } from 'svelte-sonner';
 	import ImageUpload from '$lib/components/app/ImageUpload.svelte';
 	import ApiTokens from '$lib/components/app/ApiTokens.svelte';
+	import NotificationSettings from '$lib/components/app/NotificationSettings.svelte';
 	import PageTitle from '$lib/components/app/PageTitle.svelte';
 	import LogOut from '@lucide/svelte/icons/log-out';
 	import Loader from '@lucide/svelte/icons/loader';
@@ -105,6 +106,8 @@
 			Angemeldet als <span class="text-foreground/80">{data.user.email}</span>
 		</p>
 	</section>
+
+	<NotificationSettings user={data.user} />
 
 	<ApiTokens />
 

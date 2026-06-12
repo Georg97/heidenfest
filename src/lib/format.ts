@@ -51,6 +51,20 @@ export function fromDateInput(value: string): number {
 	return new Date(y, m - 1, d, 12, 0, 0).getTime();
 }
 
+/** "gerade eben" / "vor 5 Min." / "vor 3 Std." / "vor 2 Tagen" / "12. Juni 2026" */
+export function timeAgo(ms: number, now = Date.now()): string {
+	const diff = now - ms;
+	if (diff < 60_000) return 'gerade eben';
+	const minutes = Math.floor(diff / 60_000);
+	if (minutes < 60) return `vor ${minutes} Min.`;
+	const hours = Math.floor(minutes / 60);
+	if (hours < 24) return `vor ${hours} Std.`;
+	const days = Math.floor(hours / 24);
+	if (days === 1) return 'gestern';
+	if (days < 14) return `vor ${days} Tagen`;
+	return full.format(new Date(ms));
+}
+
 /** R2 keys are served via /api/images/; external URLs (e.g. Google avatars) pass through. */
 export function imageUrl(image: string | null | undefined): string | null {
 	if (!image) return null;

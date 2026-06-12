@@ -4,6 +4,7 @@ import type { Doc } from './_generated/dataModel';
 import type { MutationCtx, QueryCtx } from './_generated/server';
 import { requireEventAdmin, requireEventMember, requireUser } from './access';
 import { cascadeDeleteList, copyListInto } from './events';
+import { notifyEventMembers } from './notifications';
 
 const apiToken = v.optional(v.string());
 
@@ -76,8 +77,14 @@ export const create = mutation({
 		apiToken
 	},
 	handler: async (ctx, { apiToken: token, ...fields }) => {
-		await requireEventAdmin(ctx, fields.eventId, token);
-		return await ctx.db.insert('lists', fields);
+		const { user, event } = await requireEventAdmin(ctx, fields.eventId, token);
+		const listId = await ctx.db.insert('lists', fields);
+		await notifyEventMembers(ctx, fields.eventId, user._id, {
+			type: 'list_created',
+			eventId: fields.eventId,
+			title: `Neue Liste „${fields.title}“ bei „${event.name}“`
+		});
+		return listId;
 	}
 });
 

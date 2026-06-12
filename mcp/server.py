@@ -241,9 +241,26 @@ def get_members(event_id: str) -> list:
 
 
 @mcp.tool
-def add_member(event_id: str, email: str) -> str:
-    """Invite a registered skol user as guest by email (event admin only)."""
+def add_member(event_id: str, email: str) -> dict:
+    """Invite someone to an event by email (event admin only).
+
+    Registered users are added as guests right away (status 'added');
+    unknown emails get an invitation email and join automatically once they
+    sign up with that address (status 'invited').
+    """
     return _call("POST", f"/events/{event_id}/members", {"email": email})
+
+
+@mcp.tool
+def list_invites(event_id: str) -> list:
+    """Pending email invites of an event (people who have not signed up yet)."""
+    return _call("GET", f"/events/{event_id}/invites")
+
+
+@mcp.tool
+def revoke_invite(invite_id: str) -> None:
+    """Withdraw a pending email invite (event admin only)."""
+    _call("DELETE", f"/invites/{invite_id}")
 
 
 @mcp.tool
@@ -256,6 +273,39 @@ def set_member_role(member_id: str, role: str) -> None:
 def remove_member(member_id: str) -> None:
     """Remove a member from an event (event admin only, not yourself)."""
     _call("DELETE", f"/members/{member_id}")
+
+
+# ---- notifications ----
+
+
+@mcp.tool
+def list_notifications() -> dict:
+    """The user's latest notifications (newest first) plus the unread count."""
+    return _call("GET", "/notifications")
+
+
+@mcp.tool
+def mark_notification_read(notification_id: str) -> None:
+    """Mark one notification as read."""
+    _call("POST", f"/notifications/{notification_id}/read")
+
+
+@mcp.tool
+def mark_all_notifications_read() -> None:
+    """Mark all of the user's notifications as read."""
+    _call("POST", "/notifications/read-all")
+
+
+@mcp.tool
+def update_notification_settings(
+    notify_in_app: bool | None = None, notify_email: bool | None = None
+) -> None:
+    """Change the user's notification settings (defaults: in-app on, email off)."""
+    _call(
+        "PATCH",
+        "/me/settings",
+        {"notifyInApp": notify_in_app, "notifyEmail": notify_email},
+    )
 
 
 # ---- app admin ----

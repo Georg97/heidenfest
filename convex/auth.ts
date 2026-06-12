@@ -17,13 +17,36 @@ export const authComponent = createClient<DataModel>(components.betterAuth, {
 			onCreate: async (ctx, authUser) => {
 				// First user to ever sign up becomes app admin (bootstrap).
 				const anyUser = await ctx.db.query('users').first();
-				await ctx.db.insert('users', {
+				const userId = await ctx.db.insert('users', {
 					authId: authUser._id,
 					name: authUser.name,
 					email: authUser.email,
 					image: authUser.image ?? undefined,
 					isAppAdmin: anyUser === null
 				});
+				// Claim pending event invites for this email address.
+				const invites = await ctx.db
+					.query('invites')
+					.withIndex('by_email', (q) => q.eq('email', authUser.email.toLowerCase()))
+					.collect();
+				for (const invite of invites) {
+					const event = await ctx.db.get(invite.eventId);
+					if (event) {
+						await ctx.db.insert('eventMembers', {
+							eventId: invite.eventId,
+							userId,
+							role: 'guest'
+						});
+						await ctx.db.insert('notifications', {
+							userId,
+							type: 'invite',
+							eventId: invite.eventId,
+							title: `Du bist jetzt bei „${event.name}“ dabei`,
+							read: false
+						});
+					}
+					await ctx.db.delete(invite._id);
+				}
 			},
 			onUpdate: async (ctx, newDoc) => {
 				const user = await ctx.db

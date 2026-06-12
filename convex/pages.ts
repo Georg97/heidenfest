@@ -3,6 +3,7 @@ import { mutation, query } from './_generated/server';
 import type { MutationCtx } from './_generated/server';
 import type { Id } from './_generated/dataModel';
 import { requireEventAdmin, requireEventMember } from './access';
+import { notifyEventMembers } from './notifications';
 
 const apiToken = v.optional(v.string());
 
@@ -27,12 +28,18 @@ export const forEvent = query({
 export const create = mutation({
 	args: { eventId: v.id('events'), title: v.string(), content: v.string(), apiToken },
 	handler: async (ctx, { apiToken: token, ...fields }) => {
-		const { user } = await requireEventAdmin(ctx, fields.eventId, token);
-		return await ctx.db.insert('pages', {
+		const { user, event } = await requireEventAdmin(ctx, fields.eventId, token);
+		const pageId = await ctx.db.insert('pages', {
 			...fields,
 			updatedBy: user._id,
 			updatedAt: Date.now()
 		});
+		await notifyEventMembers(ctx, fields.eventId, user._id, {
+			type: 'page_created',
+			eventId: fields.eventId,
+			title: `Neue Infoseite „${fields.title}“ bei „${event.name}“`
+		});
+		return pageId;
 	}
 });
 

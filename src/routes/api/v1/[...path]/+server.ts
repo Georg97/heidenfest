@@ -60,6 +60,12 @@ function optStr(value: unknown): string | undefined {
 	return typeof value === 'string' ? value : undefined;
 }
 
+function optBool(value: unknown, field: string): boolean | undefined {
+	if (value === undefined || value === null) return undefined;
+	if (typeof value !== 'boolean') throw error(400, `${field} must be a boolean`);
+	return value;
+}
+
 const routes: Route[] = [
 	{
 		method: 'GET',
@@ -293,6 +299,63 @@ const routes: Route[] = [
 			client.mutation(api.members.remove, {
 				apiToken,
 				memberId: params.id as Id<'eventMembers'>
+			})
+	},
+
+	// ---- Invites (pending, for emails without an account yet) ----
+	{
+		method: 'GET',
+		pattern: 'events/:id/invites',
+		handler: ({ client, apiToken, params }) =>
+			client.query(api.members.invitesForEvent, {
+				apiToken,
+				eventId: params.id as Id<'events'>
+			})
+	},
+	{
+		method: 'DELETE',
+		pattern: 'invites/:id',
+		handler: ({ client, apiToken, params }) =>
+			client.mutation(api.members.revokeInvite, {
+				apiToken,
+				inviteId: params.id as Id<'invites'>
+			})
+	},
+
+	// ---- Notifications ----
+	{
+		method: 'GET',
+		pattern: 'notifications',
+		handler: async ({ client, apiToken }) => {
+			const [notifications, unreadCount] = await Promise.all([
+				client.query(api.notifications.list, { apiToken }),
+				client.query(api.notifications.unreadCount, { apiToken })
+			]);
+			return { notifications, unreadCount };
+		}
+	},
+	{
+		method: 'POST',
+		pattern: 'notifications/:id/read',
+		handler: ({ client, apiToken, params }) =>
+			client.mutation(api.notifications.markRead, {
+				apiToken,
+				notificationId: params.id as Id<'notifications'>
+			})
+	},
+	{
+		method: 'POST',
+		pattern: 'notifications/read-all',
+		handler: ({ client, apiToken }) => client.mutation(api.notifications.markAllRead, { apiToken })
+	},
+	{
+		method: 'PATCH',
+		pattern: 'me/settings',
+		handler: ({ client, apiToken, body }) =>
+			client.mutation(api.notifications.updateSettings, {
+				apiToken,
+				notifyInApp: optBool(body.notifyInApp, 'notifyInApp'),
+				notifyEmail: optBool(body.notifyEmail, 'notifyEmail')
 			})
 	},
 

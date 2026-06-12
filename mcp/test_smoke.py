@@ -22,6 +22,8 @@ def check(label: str, cond: bool, extra: str = "") -> None:
 
 
 def data(result):
+    if not result.content:
+        return None  # empty results (e.g. empty lists, None)
     text = result.content[0].text
     try:
         return json.loads(text)
@@ -72,14 +74,35 @@ async def main() -> None:
         pages = data(await client.call_tool("get_pages", {"event_id": event_id}))
         check("create_page", any(p["_id"] == page_id for p in pages))
 
-        # error surface: unknown member email must raise a ToolError
-        try:
+        # invites: unknown email → pending invite, then revoke
+        invited = data(
             await client.call_tool(
-                "add_member", {"event_id": event_id, "email": "niemand@example.com"}
+                "add_member", {"event_id": event_id, "email": "mcp-invitee@example.com"}
             )
+        )
+        check("add_member unknown email → invited", invited.get("status") == "invited")
+        invites = data(await client.call_tool("list_invites", {"event_id": event_id}))
+        check("list_invites", invites[0]["email"] == "mcp-invitee@example.com")
+        await client.call_tool("revoke_invite", {"invite_id": invites[0]["_id"]})
+        invites = data(await client.call_tool("list_invites", {"event_id": event_id}))
+        check("revoke_invite", not invites)
+
+        # error surface: invalid email must raise a ToolError
+        try:
+            await client.call_tool("add_member", {"event_id": event_id, "email": "keine-email"})
             check("add_member error surfaced", False)
         except Exception as e:
-            check("add_member error surfaced", "sign up" in str(e) or "400" in str(e), str(e)[:80])
+            check("add_member error surfaced", "Invalid email" in str(e) or "400" in str(e), str(e)[:80])
+
+        # notifications
+        notifs = data(await client.call_tool("list_notifications", {}))
+        check("list_notifications", "unreadCount" in notifs and "notifications" in notifs)
+        await client.call_tool("mark_all_notifications_read", {})
+        await client.call_tool(
+            "update_notification_settings", {"notify_in_app": True, "notify_email": False}
+        )
+        me2 = data(await client.call_tool("whoami", {}))
+        check("update_notification_settings", me2.get("notifyInApp") is True)
 
         await client.call_tool("delete_event", {"event_id": event_id})
         events = data(await client.call_tool("list_events", {}))

@@ -118,8 +118,81 @@ check('PATCH page', pagePatch.ok === true);
 // --- members ---
 const members = await call('GET', `events/${eventId}/members`);
 check('GET members, creator is admin', members.data?.[0]?.role === 'admin');
-const badAdd = await call('POST', `events/${eventId}/members`, { email: 'gibtsnicht@example.com' });
-check('POST member unknown email → 400', badAdd.status === 400);
+
+// --- invites: unknown email → pending invite, claimed on signup ---
+// The invitee auth user remains afterwards (random email, harmless dev residue).
+const inviteeEmail = `smoke-invitee-${Date.now()}@example.com`;
+const invited = await call('POST', `events/${eventId}/members`, { email: inviteeEmail });
+check("POST member unknown email → 'invited'", invited.data?.status === 'invited');
+const badEmail = await call('POST', `events/${eventId}/members`, { email: 'keine-email' });
+check('POST member invalid email → 400', badEmail.status === 400);
+const dupInvite = await call('POST', `events/${eventId}/members`, { email: inviteeEmail });
+check('POST duplicate invite → 400', dupInvite.status === 400);
+
+let invites = await call('GET', `events/${eventId}/invites`);
+check(
+	'GET invites shows pending',
+	invites.data?.length === 1 && invites.data[0].email === inviteeEmail
+);
+const revokedInvite = await call('DELETE', `invites/${invites.data[0]._id}`);
+check('DELETE invite', revokedInvite.ok === true);
+await call('POST', `events/${eventId}/members`, { email: inviteeEmail });
+
+const signup = await fetch(`${BASE}/api/auth/sign-up/email`, {
+	method: 'POST',
+	headers: { 'content-type': 'application/json', origin: BASE },
+	body: JSON.stringify({
+		name: 'Smoke Invitee',
+		email: inviteeEmail,
+		password: 'test-password-1234'
+	})
+});
+check('invitee sign-up', signup.ok);
+const inviteeCookie = signup.headers.getSetCookie().map((c) => c.split(';')[0]).join('; ');
+
+async function inviteeCall(method, path, body) {
+	const res = await fetch(`${BASE}/api/v1/${path}`, {
+		method,
+		headers: { 'content-type': 'application/json', cookie: inviteeCookie, origin: BASE },
+		body: body ? JSON.stringify(body) : undefined
+	});
+	return { status: res.status, ...(await res.json().catch(() => ({}))) };
+}
+
+const membersAfter = await call('GET', `events/${eventId}/members`);
+check(
+	'invite claimed on signup → guest member',
+	membersAfter.data?.some((m) => m.email === inviteeEmail && m.role === 'guest')
+);
+invites = await call('GET', `events/${eventId}/invites`);
+check('invite consumed', invites.data?.length === 0);
+
+// --- notifications ---
+let notifs = await inviteeCall('GET', 'notifications');
+check(
+	'GET notifications: claim created invite notification',
+	notifs.data?.unreadCount === 1 && notifs.data?.notifications[0]?.type === 'invite'
+);
+const markOne = await inviteeCall('POST', `notifications/${notifs.data.notifications[0]._id}/read`);
+check('POST notification read', markOne.ok === true);
+
+await call('PATCH', `events/${eventId}`, { brief: 'Nochmal aktualisiert.' });
+notifs = await inviteeCall('GET', 'notifications');
+check(
+	'event update notifies members (not the actor)',
+	notifs.data?.unreadCount === 1 && notifs.data?.notifications[0]?.type === 'event_updated'
+);
+const readAll = await inviteeCall('POST', 'notifications/read-all');
+notifs = await inviteeCall('GET', 'notifications');
+check('POST read-all', readAll.ok === true && notifs.data?.unreadCount === 0);
+
+// --- notification settings ---
+const setOn = await inviteeCall('PATCH', 'me/settings', { notifyEmail: true });
+const meAfter = await inviteeCall('GET', 'me');
+check('PATCH me/settings', setOn.ok === true && meAfter.data?.notifyEmail === true);
+const badSetting = await inviteeCall('PATCH', 'me/settings', { notifyEmail: 'ja' });
+check('PATCH me/settings invalid → 400', badSetting.status === 400);
+await inviteeCall('PATCH', 'me/settings', { notifyEmail: false });
 
 // --- duplicate event ---
 const dup = await call('POST', `events/${eventId}/duplicate`, {

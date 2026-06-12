@@ -44,6 +44,8 @@ const shots = [
 	['events', `${BASE}/events`],
 	['event-lists', `${BASE}/events/${heidenfest._id}`],
 	['event-info', `${BASE}/events/${heidenfest._id}?tab=info`],
+	['event-members', `${BASE}/events/${heidenfest._id}?tab=people`],
+	['notifications', `${BASE}/notifications`],
 	['profile', `${BASE}/profile`]
 ];
 

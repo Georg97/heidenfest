@@ -57,13 +57,28 @@ One of:
 | PATCH | `/pages/:id` | `title?`, `content?` (event admin) |
 | DELETE | `/pages/:id` | (event admin) |
 
-### Members
+### Members & invites
 | Method | Path | Body |
 |---|---|---|
 | GET | `/events/:id/members` | — |
-| POST | `/events/:id/members` | `email` of a registered user → joins as guest (event admin) |
+| POST | `/events/:id/members` | `email` (event admin). Registered user → joins as guest (`{status:"added"}`); unknown email → invitation email, joins on signup (`{status:"invited"}`) |
 | PATCH | `/members/:id` | `role`: `"guest"` \| `"admin"` (event admin) |
 | DELETE | `/members/:id` | not yourself (event admin) |
+| GET | `/events/:id/invites` | pending email invites (empty for non-admins) |
+| DELETE | `/invites/:id` | withdraw a pending invite (event admin) |
+
+### Notifications
+| Method | Path | Body |
+|---|---|---|
+| GET | `/notifications` | — → `{ notifications: […], unreadCount }`, newest first (50) |
+| POST | `/notifications/:id/read` | — |
+| POST | `/notifications/read-all` | — |
+| PATCH | `/me/settings` | `notifyInApp?`, `notifyEmail?` (booleans; defaults: in-app on, email off) |
+
+Notifications are created for: invites, event updates, new lists and new info
+pages — always for everyone in the event except the acting user. Email copies
+are sent from Convex (scheduler) when the user opted in; invitation emails to
+not-yet-registered people are always sent.
 
 ### App admin
 | Method | Path | Body |

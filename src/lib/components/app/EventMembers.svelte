@@ -7,11 +7,14 @@
 	import Crown from '@lucide/svelte/icons/crown';
 	import X from '@lucide/svelte/icons/x';
 	import UserPlus from '@lucide/svelte/icons/user-plus';
+	import MailQuestion from '@lucide/svelte/icons/mail-question';
 
 	let { eventId, role }: { eventId: Id<'events'>; role: 'guest' | 'admin' } = $props();
 
 	const client = useConvexClient();
 	const members = useQuery(api.members.forEvent, () => ({ eventId }));
+	// Returns [] for guests, so it is safe to query unconditionally.
+	const invites = useQuery(api.members.invitesForEvent, () => ({ eventId }));
 
 	let email = $state('');
 	let adding = $state(false);
@@ -26,13 +29,25 @@
 		if (!value) return;
 		adding = true;
 		try {
-			await client.mutation(api.members.add, { eventId, email: value });
+			const result = await client.mutation(api.members.add, { eventId, email: value });
 			email = '';
-			toast.success('Gast hinzugefügt');
+			if (result.status === 'invited') {
+				toast.success('Einladung verschickt — sobald sich die Person registriert, ist sie dabei');
+			} else {
+				toast.success('Gast hinzugefügt');
+			}
 		} catch (e) {
 			fail(e);
 		} finally {
 			adding = false;
+		}
+	}
+
+	async function revokeInvite(inviteId: Id<'invites'>) {
+		try {
+			await client.mutation(api.members.revokeInvite, { inviteId });
+		} catch (e) {
+			fail(e);
 		}
 	}
 
@@ -123,6 +138,53 @@
 			</ul>
 		</section>
 
+		{#if role === 'admin' && (invites.data?.length ?? 0) > 0}
+			<section
+				class="border-ember/12 bg-card/20 overflow-hidden rounded-2xl border backdrop-blur-sm"
+			>
+				<p
+					class="text-ember/80 border-b border-white/5 px-5 pt-4 pb-3 text-[10px] tracking-[0.28em] uppercase"
+					style="font-family: var(--font-display);"
+				>
+					Eingeladen
+				</p>
+				<ul>
+					{#each invites.data ?? [] as invite, i (invite._id)}
+						<li
+							class="flex items-center gap-3 px-5 py-3 {i !== 0 ? 'border-t border-white/5' : ''}"
+						>
+							<span
+								class="border-ember/25 text-ember/70 flex size-10 shrink-0 items-center justify-center rounded-full border border-dashed"
+							>
+								<MailQuestion class="size-4" />
+							</span>
+							<div class="min-w-0 flex-1">
+								<p
+									class="text-foreground truncate text-[15px]"
+									style="font-family: var(--font-body);"
+								>
+									{invite.email}
+								</p>
+								<p
+									class="text-muted-foreground text-[10px] tracking-[0.22em] uppercase"
+									style="font-family: var(--font-display);"
+								>
+									Wartet auf Registrierung
+								</p>
+							</div>
+							<button
+								onclick={() => revokeInvite(invite._id)}
+								class="text-muted-foreground/50 hover:text-destructive flex size-8 items-center justify-center rounded-full transition-colors"
+								aria-label="Einladung zurückziehen"
+							>
+								<X class="size-4" />
+							</button>
+						</li>
+					{/each}
+				</ul>
+			</section>
+		{/if}
+
 		{#if role === 'admin'}
 			<div class="border-ember/20 bg-card/20 rounded-2xl border border-dashed px-5 py-4">
 				<div class="flex items-center gap-3">
@@ -148,7 +210,7 @@
 					class="text-muted-foreground/70 mt-2 pl-8 text-xs italic"
 					style="font-family: var(--font-body);"
 				>
-					Die Person muss sich vorher bei skol angemeldet haben.
+					Ist die Person noch nicht bei skol, schicken wir ihr eine Einladung per E-Mail.
 				</p>
 			</div>
 		{/if}

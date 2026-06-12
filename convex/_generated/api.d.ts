@@ -13,10 +13,12 @@ import type * as admin from "../admin.js";
 import type * as apiTokens from "../apiTokens.js";
 import type * as auth from "../auth.js";
 import type * as dev from "../dev.js";
+import type * as email from "../email.js";
 import type * as events from "../events.js";
 import type * as http from "../http.js";
 import type * as lists from "../lists.js";
 import type * as members from "../members.js";
+import type * as notifications from "../notifications.js";
 import type * as pages from "../pages.js";
 
 import type {
@@ -31,10 +33,12 @@ declare const fullApi: ApiFromModules<{
   apiTokens: typeof apiTokens;
   auth: typeof auth;
   dev: typeof dev;
+  email: typeof email;
   events: typeof events;
   http: typeof http;
   lists: typeof lists;
   members: typeof members;
+  notifications: typeof notifications;
   pages: typeof pages;
 }>;
 

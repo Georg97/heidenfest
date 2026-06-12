@@ -43,6 +43,8 @@ lists          { eventId, title, description?, sortKey }
 listEntries    { listId, title, sortKey }
 entryMarks     { entryId, listId, userId, comment?, createdAt }
 pages          { eventId, title, content (markdown), sortKey, updatedBy, updatedAt }
+invites        { eventId, email, invitedBy }                  // pending, claimed on signup
+notifications  { userId, type, title, body?, eventId?, read } // in-app copies
 apiTokens      { userId, name, tokenHash, prefix, createdAt, lastUsedAt? }
 ```
 
@@ -132,11 +134,33 @@ First registered user becomes app admin (bootstrap).
 - [x] Heidenfest 2026 seeded as first real event (scripts/seed-heidenfest.mjs)
 - [x] PLAN.md checklists updated, final commit
 
+### Phase 6 — Invites, notifications & email (Juni 2026)
+- [x] Fix email login on Vercel: auth proxy retries POSTs once on stale
+      keep-alive sockets (undici only auto-retries GETs, never POSTs)
+- [x] `invites` table — inviting unknown emails sends an invitation email;
+      membership is auto-created when the person signs up with that address
+      (auth onCreate trigger), invite consumed
+- [x] `notifications` table + per-user settings on `users`
+      (`notifyInApp` default on, `notifyEmail` default off)
+- [x] Notification triggers: invite, event updated, new list, new page —
+      all event members except the actor
+- [x] Email sending from Convex: `email.ts` internalAction via scheduler
+      (Resend REST API; logs + skips when `RESEND_API_KEY` is unset)
+- [x] UI: bell + unread badge in header, `/notifications` page, settings
+      toggles in profile, pending-invites section with revoke in EventMembers
+- [x] REST: `/notifications*`, `/me/settings`, `/events/:id/invites`,
+      `/invites/:id`; member add returns `{status: "added"|"invited"}`
+- [x] MCP: 6 new tools (32 total)
+- [x] Smoke suites extended: REST 43/43, MCP 12/12 — all pass
+
 ### Backlog (deliberately not built — KISS)
 - Entry reordering (creation order is fine for now)
 - Convex `convexLoad` SSR upgrade for queries (client-side useQuery is fine)
 - Account deletion flow (dashboard operation)
-- Production deployment (adapter choice, `npx convex deploy`, prod env vars)
+- Per-type notification settings (one global pair of toggles for now)
+- Notifications for new list entries / marks (too noisy)
+- Retry-on-stale-socket for `createConvexHttpClient` SSR calls (same undici
+  POST issue as the auth proxy, just far rarer; revisit if sporadic 500s show)
 
 ## 5. Environment variables
 
@@ -147,6 +171,8 @@ First registered user becomes app admin (bootstrap).
 | `PUBLIC_CONVEX_SITE_URL` | `.env.local` | Convex HTTP actions URL (auth proxy target) |
 | `SITE_URL`, `BETTER_AUTH_SECRET`, `GOOGLE_CLIENT_ID/SECRET` | Convex deployment env | Better Auth runs inside Convex |
 | `R2_ENDPOINT`, `R2_BUCKET`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | `.env` | Presigned uploads (server only) |
+| `RESEND_API_KEY` | Convex deployment env | Email sending; unset → sends are logged + skipped |
+| `EMAIL_FROM` | Convex deployment env | Sender, e.g. `skol <fest@domain>`; defaults to Resend's onboarding sender |
 
 ## 6. Open questions / needs from Georg
 

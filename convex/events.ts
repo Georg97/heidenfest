@@ -8,6 +8,7 @@ import {
 	requireEventMember,
 	requireUser
 } from './access';
+import { notifyEventMembers } from './notifications';
 
 // All functions accept an optional apiToken so the REST API / MCP can act
 // as the token's user; the web app authenticates via session instead.
@@ -81,10 +82,15 @@ export const update = mutation({
 		apiToken
 	},
 	handler: async (ctx, { eventId, apiToken: token, ...fields }) => {
-		const { event } = await requireEventAdmin(ctx, eventId, token);
+		const { user, event } = await requireEventAdmin(ctx, eventId, token);
 		const next = { ...event, ...fields };
 		if (next.endDate < next.startDate) throw new ConvexError('End date before start date');
 		await ctx.db.patch(eventId, fields);
+		await notifyEventMembers(ctx, eventId, user._id, {
+			type: 'event_updated',
+			eventId,
+			title: `„${next.name}“ wurde aktualisiert`
+		});
 	}
 });
 
@@ -188,6 +194,16 @@ export async function cascadeDeleteEvent(ctx: MutationCtx, eventId: Id<'events'>
 		.withIndex('by_event', (q) => q.eq('eventId', eventId))
 		.collect();
 	for (const member of members) await ctx.db.delete(member._id);
+	const invites = await ctx.db
+		.query('invites')
+		.withIndex('by_event', (q) => q.eq('eventId', eventId))
+		.collect();
+	for (const invite of invites) await ctx.db.delete(invite._id);
+	const notifications = await ctx.db
+		.query('notifications')
+		.withIndex('by_event', (q) => q.eq('eventId', eventId))
+		.collect();
+	for (const notification of notifications) await ctx.db.delete(notification._id);
 	await ctx.db.delete(eventId);
 }
 
