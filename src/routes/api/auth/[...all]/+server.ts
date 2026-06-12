@@ -1,26 +1,63 @@
-import { createSvelteKitHandler } from '@mmailaender/convex-better-auth-svelte/sveltekit';
 import type { RequestHandler } from './$types';
 import { PUBLIC_CONVEX_SITE_URL } from '$env/static/public';
 
-// Proxies /api/auth/* to Better Auth running inside Convex (HTTP actions),
-// keeping cookies and OAuth redirects on the app origin.
-const handler = createSvelteKitHandler({ convexSiteUrl: PUBLIC_CONVEX_SITE_URL });
+/**
+ * Proxies /api/auth/* to Better Auth running inside Convex (HTTP actions),
+ * keeping cookies and OAuth redirects on the app origin.
+ *
+ * Hand-rolled instead of the library's createSvelteKitHandler: on Vercel its
+ * pass-through of the streamed request body made upstream POSTs fail with
+ * "TypeError: fetch failed" (e.g. email sign-in). We buffer the body — auth
+ * payloads are tiny — and retry once on transient connection errors.
+ */
 
-// On Vercel, function instances are reused and undici keeps idle keep-alive
-// connections to Convex that Convex eventually closes. undici transparently
-// retries GETs on such dead sockets but never POSTs, so the first POST after
-// an idle period fails with "TypeError: fetch failed" (this broke email
-// sign-in). Clone the request up front and retry once on a fresh connection.
-const withRetry =
-	(inner: RequestHandler): RequestHandler =>
-	async (event) => {
-		const retryRequest = event.request.clone();
-		try {
-			return await inner(event);
-		} catch {
-			return await inner({ ...event, request: retryRequest });
-		}
-	};
+const FORWARDED_HEADERS = new Set([
+	'accept',
+	'authorization',
+	'better-auth-cookie',
+	'content-type',
+	'cookie',
+	'origin',
+	'referer',
+	'user-agent'
+]);
 
-export const GET = withRetry(handler.GET);
-export const POST = withRetry(handler.POST);
+const handler: RequestHandler = async ({ request }) => {
+	if (!PUBLIC_CONVEX_SITE_URL) {
+		throw new Error('PUBLIC_CONVEX_SITE_URL environment variable is not set');
+	}
+	const requestUrl = new URL(request.url);
+	const target = `${PUBLIC_CONVEX_SITE_URL}${requestUrl.pathname}${requestUrl.search}`;
+
+	const headers = new Headers();
+	for (const [name, value] of request.headers) {
+		if (FORWARDED_HEADERS.has(name)) headers.set(name, value);
+	}
+	headers.set('x-forwarded-host', requestUrl.host);
+	headers.set('x-forwarded-proto', requestUrl.protocol.replace(/:$/, ''));
+	headers.set('x-better-auth-forwarded-host', requestUrl.host);
+	headers.set('x-better-auth-forwarded-proto', requestUrl.protocol.replace(/:$/, ''));
+	headers.set('accept-encoding', 'identity');
+
+	const body =
+		request.method === 'GET' || request.method === 'HEAD'
+			? undefined
+			: await request.arrayBuffer();
+	const attempt = () =>
+		fetch(target, { method: request.method, headers, body, redirect: 'manual' });
+
+	try {
+		return await attempt();
+	} catch (error) {
+		console.error(
+			'auth proxy upstream fetch failed, retrying once:',
+			error,
+			'cause:',
+			(error as Error)?.cause
+		);
+		return await attempt();
+	}
+};
+
+export const GET = handler;
+export const POST = handler;
