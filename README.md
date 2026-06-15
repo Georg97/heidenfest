@@ -1,11 +1,5 @@
-# heidenfest
+# SKOL
 
-Heidenfest Planungs Seite
-
-Built with [dabsstack](https://github.com/Georg97/dabsstack) — SvelteKit + Tailwind CSS + Bits UI + TypeScript.
-
-## Getting Started
-
-```bash
-npm run dev
-```
+- [ ] Documents Support for Info Pages (Images etc.)
+- [ ] Image Gallery for Memorable Moments
+- [ ] Document Section (e.g. Tickets, Infos, Flyers)
